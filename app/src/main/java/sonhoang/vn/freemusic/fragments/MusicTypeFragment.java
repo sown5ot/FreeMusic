@@ -25,6 +25,7 @@ import sonhoang.vn.freemusic.databases.MusicTypeModel;
 import sonhoang.vn.freemusic.networks.MusicInterface;
 import sonhoang.vn.freemusic.networks.MusicTypesResponseJSON;
 import sonhoang.vn.freemusic.networks.RetrofitInstance;
+import sonhoang.vn.freemusic.utils.DatabaseHandler;
 
 public class MusicTypeFragment extends Fragment {
     private List<MusicTypeModel> musicTypeModelList = new ArrayList<>();
@@ -46,7 +47,6 @@ public class MusicTypeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_music_type, container, false);
         ButterKnife.bind(this, view);
         setupUI();
-        loadData();
 
         return view;
     }
@@ -64,6 +64,13 @@ public class MusicTypeFragment extends Fragment {
             }
         });
         rvMusicTypes.setLayoutManager(gridLayoutManager);
+
+        if (DatabaseHandler.getMusicType().size() == 0){
+            loadData();
+        } else {
+            musicTypeModelList.addAll(DatabaseHandler.getMusicType());
+            musicTypeAdapter.notifyDataSetChanged();
+        }
     }
 
     private void loadData() {
@@ -83,6 +90,7 @@ public class MusicTypeFragment extends Fragment {
                             context.getPackageName()
                     );
                     musicTypeModelList.add(musicTypeModel);
+                    DatabaseHandler.addMusicType(musicTypeModel);
                 }
                 musicTypeAdapter.notifyDataSetChanged();
             }

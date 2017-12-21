@@ -5,10 +5,10 @@ package sonhoang.vn.freemusic.databases;
  */
 
 public class TopSongsModel {
+    public int songPosition;
     public String songName;
     public String songArtist;
     public String songImage;
-    public int songIntImage;
     public String songUrl;
     public String songLargeImage;
 }

@@ -1,6 +1,7 @@
 package sonhoang.vn.freemusic.fragments;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -36,9 +37,11 @@ import sonhoang.vn.freemusic.adapters.TopSongsAdapter;
 import sonhoang.vn.freemusic.databases.MusicTypeModel;
 import sonhoang.vn.freemusic.databases.TopSongsModel;
 import sonhoang.vn.freemusic.events.OnClickMusicTypeEvent;
+import sonhoang.vn.freemusic.events.OnUpdateFavorite;
 import sonhoang.vn.freemusic.networks.MusicInterface;
 import sonhoang.vn.freemusic.networks.RetrofitInstance;
 import sonhoang.vn.freemusic.networks.TopSongsResponseJSON;
+import sonhoang.vn.freemusic.utils.DatabaseHandler;
 
 
 /**
@@ -147,6 +150,26 @@ public class TopSongFragment extends Fragment {
         rvMusicContent.setItemAnimator(new SlideInLeftAnimator());
         rvMusicContent.getItemAnimator().setAddDuration(300);
         avLoadingIndicatorView.show();
+
+        if (musicTypeModel.isFavorite){
+            ivFragFavorite.setColorFilter(Color.RED);
+        } else {
+            ivFragFavorite.setColorFilter(Color.WHITE);
+        }
+
+        ivFragFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseHandler.setFavorite(musicTypeModel);
+
+                if (musicTypeModel.isFavorite){
+                    ivFragFavorite.setColorFilter(Color.RED);
+                } else {
+                    ivFragFavorite.setColorFilter(Color.WHITE);
+                }
+                EventBus.getDefault().postSticky(new OnUpdateFavorite());
+            }
+        });
     }
 
 }

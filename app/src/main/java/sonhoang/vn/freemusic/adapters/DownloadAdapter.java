@@ -71,7 +71,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    EventBus.getDefault().postSticky(new OnClickTopSongsEvent(topSongsModel));
+                    EventBus.getDefault().postSticky(new OnClickTopSongsEvent(topSongsModel, topSongsModels));
                 }
             });
         }

@@ -89,7 +89,7 @@ public class MusicHandler {
             public void run() {
                 //update UI
                 if (keepUpdating && hybridMediaPlayer != null){
-                    //update seekbar real time
+                    //update seek bar real time
                     seekBar.setMax(hybridMediaPlayer.getDuration());
                     seekBar.setProgress(hybridMediaPlayer.getCurrentPosition());
 
@@ -131,4 +131,5 @@ public class MusicHandler {
             }
         });
     }
+
 }

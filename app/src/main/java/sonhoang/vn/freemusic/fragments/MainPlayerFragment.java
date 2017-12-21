@@ -29,6 +29,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hybridmediaplayer.HybridMediaPlayer;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 import sonhoang.vn.freemusic.R;
 import sonhoang.vn.freemusic.databases.TopSongsModel;
@@ -41,6 +42,7 @@ import sonhoang.vn.freemusic.utils.MusicHandler;
 public class MainPlayerFragment extends Fragment {
     private static final String TAG = MainPlayerFragment.class.toString();
     private TopSongsModel topSongsModel;
+    private List<TopSongsModel> topSongsModels;
 
     @BindView(R.id.tb_playing_song)
     android.support.v7.widget.Toolbar tbPlayingSong;
@@ -79,6 +81,12 @@ public class MainPlayerFragment extends Fragment {
         setupUI(view);
         EventBus.getDefault().register(this);
         addListeners();
+        MusicHandler.hybridMediaPlayer.setOnCompletionListener(new HybridMediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(HybridMediaPlayer hybridMediaPlayer) {
+                changeSong(topSongsModel, 1);
+            }
+        });
         return view;
     }
 
@@ -94,6 +102,31 @@ public class MainPlayerFragment extends Fragment {
                 }
             }
         });
+
+        ivPlayingSongNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeSong(topSongsModel, 1);
+            }
+        });
+
+        ivPlayingSongPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeSong(topSongsModel, -1);
+            }
+        });
+    }
+
+    private void changeSong(TopSongsModel topSongsModel, int selectedSong) {
+        this.topSongsModel = topSongsModels.get(topSongsModel.songPosition + selectedSong);
+        Log.d(TAG, "changeSong: " + this.topSongsModel.songName);
+        MusicHandler.getSearchSong(this.topSongsModel, getContext());
+        MusicHandler.updateUIRealTime(sbPlayingSong, fabPlayingSongPlayPause, ivPlayingSongImage, tvPlayingSongCurrentTime, tvPlayingSongDuration);
+
+        tvPlayingSongName.setText(this.topSongsModel.songName);
+        tvPlayingSongArtist.setText(this.topSongsModel.songArtist);
+        EventBus.getDefault().postSticky(new OnClickTopSongsEvent(this.topSongsModel, topSongsModels));
     }
 
     private void downloadSong() {
@@ -129,6 +162,7 @@ public class MainPlayerFragment extends Fragment {
 
     private void setupUI(View view) {
         ButterKnife.bind(this, view);
+
         tbPlayingSong.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         tbPlayingSong.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +181,7 @@ public class MainPlayerFragment extends Fragment {
     @Subscribe(sticky = true)
     public void onMiniPlayerClicked(OnClickTopSongsEvent onClickTopSongsEvent){
         topSongsModel = onClickTopSongsEvent.topSongsModel;
+        topSongsModels = onClickTopSongsEvent.topSongsModels;
 
         tvPlayingSongName.setText(topSongsModel.songName);
         tvPlayingSongArtist.setText(topSongsModel.songArtist);

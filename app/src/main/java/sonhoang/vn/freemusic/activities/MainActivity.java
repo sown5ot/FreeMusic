@@ -17,6 +17,8 @@ import com.squareup.picasso.Picasso;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(sticky = true)
     public void onReceivedTopSong(OnClickTopSongsEvent onClickTopSongsEvent){
         TopSongsModel topSongsModel = onClickTopSongsEvent.topSongsModel;
+
         rlMiniPlayer.setVisibility(View.VISIBLE);
         Picasso.with(this).load(topSongsModel.songImage).transform(new CropCircleTransformation()).into(ivMiniPlayerImage);
         tvMiniPlayerArtist.setText(topSongsModel.songArtist);
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         MusicHandler.getSearchSong(topSongsModel, this);
         MusicHandler.updateUIRealTime(sbMiniPlayer, fabPlayPause, ivMiniPlayerImage, null, null);
+
 
         Log.d(TAG, "onReceivedTopSong: " + topSongsModel.songName);
     }

@@ -44,7 +44,7 @@ public class TopSongsAdapter extends RecyclerView.Adapter<TopSongsAdapter.TopSon
 
     @Override
     public void onBindViewHolder(TopSongsViewHolder holder, int position) {
-        holder.setData(topSongsModels.get(position));
+        holder.setData(topSongsModels.get(position), position);
     }
 
     @Override
@@ -67,14 +67,15 @@ public class TopSongsAdapter extends RecyclerView.Adapter<TopSongsAdapter.TopSon
             view = itemView;
         }
 
-        public void setData(final TopSongsModel topSongsModel){
+        public void setData(final TopSongsModel topSongsModel, int position){
+            topSongsModel.songPosition = position;
             Picasso.with(context).load(topSongsModel.songImage).transform(new CropCircleTransformation()).into(ivSongImage);
             tvSongName.setText(topSongsModel.songName);
             tvSongArtist.setText(topSongsModel.songArtist);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    EventBus.getDefault().postSticky(new OnClickTopSongsEvent(topSongsModel));
+                    EventBus.getDefault().postSticky(new OnClickTopSongsEvent(topSongsModel, topSongsModels));
 
                 }
             });
